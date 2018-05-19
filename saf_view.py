@@ -1,14 +1,25 @@
 import os
+from tkinter import filedialog
 from tkinter import *
 
 from PIL import Image, ImageTk
 
-pastSplash = False
+import sys
+# if sys.stdin.isatty():
+#     # running interactively
+#     print ("running interactively")
+
+
 
 fTypes = [".jpg", ".jpeg", ".png", ".gif"]  #".jpg", ".jpeg", ".png", ".gif"
 img = []
 cf = ""
-cwd = os.getcwd()  # make new junk dir at       cwd + "/junk/"
+
+# if sys.stdin.isatty():
+
+cwd = os.getcwd()
+
+# make new junk dir at       cwd + "/junk/"
 
 if (not os.path.exists(os.getcwd()+"/junk")):
 	try:
@@ -19,10 +30,22 @@ if (not os.path.exists(os.getcwd()+"/junk")):
 		exit()
 
 
-for fT in fTypes:
-	for file in os.listdir(cwd + "/"):
-		if file.endswith(fT):
-			img.append(file)
+
+def loadDir():
+
+	global img
+	global cwd
+	img = []
+	for fT in fTypes:
+		for file in os.listdir(cwd + "/"):
+			if file.endswith(fT):
+				img.append(file)
+
+
+loadDir()
+
+# loadDir(filedialog.askdirectory())
+
 
 
 
@@ -52,18 +75,19 @@ def nextPic(fn):
 def newPhoto(event):
 	global cf
 	global img
-	global pastSplash
+	global cwd
 
 	if event.char == 'z':
-		if (not pastSplash):
-			return False
 		print(cwd + "/" + cf, " moved to " + cwd + "/junk/" + cf)
 		os.rename(cwd + "/" + cf, cwd + "/junk/" + cf)
 		try:		
 			fn = img.pop()
 		except: 
 			print("End of images terminating script...")
-			exit()
+			cwd = filedialog.askdirectory()
+			loadDir()
+			# exit()
+
 		cf = fn
 		nextPic(fn)
 
@@ -72,29 +96,38 @@ def newPhoto(event):
 		root.destroy()
 
 	elif event.char == ' ':
-		pastSplash = True
 		try:
 			fn = img.pop()
+			cf = fn
+			print("Next! " + cwd + "/" + fn)
+			nextPic(fn)
+
 		except: 
 			print("End of images terminating script...")
-			exit()
-		cf = fn
-		print("Next! " + cwd + "/" + fn)
-		nextPic(fn)
+			# exit()
+			cwd = filedialog.askdirectory()
+			loadDir()
+
+
+
+	elif event.char == "d":
+		cwd = filedialog.askdirectory()
+		loadDir()
+
 
 root = Tk()
-
 # get screen width and height
 ws = root.winfo_screenwidth()-100 # width of the screen
+
 hs = root.winfo_screenheight()-100 # height of the screen
 root.title("PPC's SAF Image Viewer!")
 root.geometry('%dx%d+20+20' % (ws, hs))
 
-instructions = Label(root, text="[SPACEBAR] = next picture.  -   [Z] = move picture to junk folder.  -   [Q] = quit.   By The Pascal Pirate", bg="blue", fg="white")
+instructions = Label(root, text="[SPACEBAR] = next picture.  -   [Z] = move picture to junk folder.  -   [D] = load new folder  -   [Q] = quit.   By The Pascal Pirate.", bg="blue", fg="white")
 instructions.pack()
 
-#cf = img.pop()
-photo = PhotoImage(file="/usr/local/bin/saf_view_splash.png")
+cf = img.pop()
+photo = PhotoImage(file=cf)
 
 label = Label(root, image=photo)
 label.pack()
@@ -102,6 +135,7 @@ label.pack()
 ent = Entry(root)
 ent.bind_all('<Key>', newPhoto)
 ent.focus_set()
+
 
 root.mainloop()
 
