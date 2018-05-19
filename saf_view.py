@@ -6,21 +6,12 @@ from tkinter import *
 from PIL import Image, ImageTk
 
 import sys
-# if sys.stdin.isatty():
-#     # running interactively
-#     print ("running interactively")
-
-
 
 fTypes = [".jpg", ".jpeg", ".png", ".gif"]  #".jpg", ".jpeg", ".png", ".gif"
 img = []
 cf = ""
 
-# if sys.stdin.isatty():
-
 cwd = os.getcwd()
-
-# make new junk dir at       cwd + "/junk/"
 
 if (not os.path.exists(os.getcwd()+"/junk")):
 	try:
@@ -44,11 +35,6 @@ def loadDir():
 
 
 loadDir()
-
-# loadDir(filedialog.askdirectory())
-
-
-
 
 def nextPic(fn):
 
@@ -115,13 +101,10 @@ def handelKeys(event):
 
 		except: 
 			print("End of images asking for new directory...")
-			# exit()
 			tmp = filedialog.askdirectory()
 			if tmp:
 				cwd = tmp
 				loadDir()
-
-
 
 	elif event.char == "d":
 		tmp = filedialog.askdirectory()
@@ -138,9 +121,6 @@ hs = root.winfo_screenheight()-300 # height of the screen
 
 root.title("PPC's SAF Image Viewer!")
 root.geometry('%dx%d+170+120' % (ws, hs))
-# root.geometry('+20+20')
-
-
 
 photo = PhotoImage(file="/usr/local/bin/saf_view_splash.png")
 
