@@ -1,4 +1,5 @@
 import os
+from tkinter import messagebox
 from tkinter import filedialog
 from tkinter import *
 
@@ -51,8 +52,10 @@ loadDir()
 
 def nextPic(fn):
 
+	imname = (cwd + "/" + fn)
+	image = Image.open(imname)
 
-	image = Image.open((cwd + "/" + fn))
+	root.title("PPC's SAF Image Viewer! - " + imname)
 
 	wh = root.winfo_height()-30
 
@@ -72,7 +75,11 @@ def nextPic(fn):
 
 	label.image = photo 
 
-def newPhoto(event):
+def showHelp(self):
+	messagebox.showinfo('Help', "[SPACEBAR] = next picture\n[Z] = move picture to junk folder\n[D] = load new folder\n[H] = This help\n[Q] = quit\n\nBy The Pascal Pirate."
+)
+
+def handelKeys(event):
 	global cf
 	global img
 	global cwd
@@ -83,10 +90,11 @@ def newPhoto(event):
 		try:		
 			fn = img.pop()
 		except: 
-			print("End of images terminating script...")
-			cwd = filedialog.askdirectory()
-			loadDir()
-			# exit()
+			print("End of images asking for new directory...")
+			tmp = filedialog.askdirectory()
+			if tmp:
+				cwd = tmp
+				loadDir()
 
 		cf = fn
 		nextPic(fn)
@@ -94,6 +102,9 @@ def newPhoto(event):
 	elif event.char == 'q':
 		print("Quit!")
 		root.destroy()
+
+	elif event.char == '?' or event.char == "h":
+		showHelp(False)
 
 	elif event.char == ' ':
 		try:
@@ -103,39 +114,54 @@ def newPhoto(event):
 			nextPic(fn)
 
 		except: 
-			print("End of images terminating script...")
+			print("End of images asking for new directory...")
 			# exit()
-			cwd = filedialog.askdirectory()
-			loadDir()
+			tmp = filedialog.askdirectory()
+			if tmp:
+				cwd = tmp
+				loadDir()
 
 
 
 	elif event.char == "d":
-		cwd = filedialog.askdirectory()
-		loadDir()
+		tmp = filedialog.askdirectory()
+		if tmp:
+			cwd = tmp
+			loadDir()
 
 
 root = Tk()
 # get screen width and height
-ws = root.winfo_screenwidth()-100 # width of the screen
+ws = root.winfo_screenwidth()-380 # width of the screen
 
-hs = root.winfo_screenheight()-100 # height of the screen
+hs = root.winfo_screenheight()-300 # height of the screen
+
 root.title("PPC's SAF Image Viewer!")
-root.geometry('%dx%d+20+20' % (ws, hs))
+root.geometry('%dx%d+170+120' % (ws, hs))
+# root.geometry('+20+20')
 
-instructions = Label(root, text="[SPACEBAR] = next picture.  -   [Z] = move picture to junk folder.  -   [D] = load new folder  -   [Q] = quit.   By The Pascal Pirate.", bg="blue", fg="white")
-instructions.pack()
 
-cf = img.pop()
-photo = PhotoImage(file=cf)
+
+photo = PhotoImage(file="/usr/local/bin/saf_view_splash.png")
+
+if not photo:
+	cf = img.pop()
+	photo = PhotoImage(file=cf)
 
 label = Label(root, image=photo)
 label.pack()
 
 ent = Entry(root)
-ent.bind_all('<Key>', newPhoto)
+ent.bind_all('<Key>', handelKeys)
 ent.focus_set()
 
+wl = ws-20
+instructions = Label(root, text=u"\u2699", fg="grey", wraplength=ws)
+instructions.config(font=("Times", 16))
+instructions.place(x=1, y=1)
+instructions.bind("<Button-1>", showHelp)
+
+showHelp(False)
 
 root.mainloop()
 
