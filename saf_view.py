@@ -122,7 +122,7 @@ hs = root.winfo_screenheight()-300 # height of the screen
 root.title("PPC's SAF Image Viewer!")
 root.geometry('%dx%d+170+120' % (ws, hs))
 
-photo = PhotoImage(file="/usr/local/bin/saf_view_splash.png")
+photo = PhotoImage(file="saf_view_splash.png")
 
 if not photo:
 	cf = img.pop()

@@ -14,11 +14,11 @@ saf_view                    = The bash script that runs starts the script
 
 I placed all three files in the "/usr/local/bin/"
 
+will need to install PIP and PIP.ImageTk : sudo apt-get install python3-pil python3-pil.imagetk
+
 In the future:
 
 Hope to add, "undo move", and prev image controls, and tweek for execution on the other OS some people still use :)
-
-
 
 http://pascalpiratescove.com
 
